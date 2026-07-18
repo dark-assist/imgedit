@@ -67,8 +67,9 @@ def upload_file():
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_id}{ext}")
     file.save(save_path)
     
+    exiftool_path = os.path.join(app.root_path, 'Image-ExifTool-13.59', 'exiftool')
     try:
-        with exiftool.ExifToolHelper() as et:
+        with exiftool.ExifToolHelper(executable=exiftool_path) as et:
             metadata = et.get_metadata(save_path)[0]
             
         # Security: Remove sensitive server paths from metadata
@@ -107,8 +108,9 @@ def edit_metadata():
     file_info = json.loads(cache_data)
     file_path = file_info['path']
     
+    exiftool_path = os.path.join(app.root_path, 'Image-ExifTool-13.59', 'exiftool')
     try:
-        with exiftool.ExifToolHelper() as et:
+        with exiftool.ExifToolHelper(executable=exiftool_path) as et:
             # Note: exiftool expects a dict of tags to set
             et.set_tags(file_path, tags=modifications)
     except Exception as e:
