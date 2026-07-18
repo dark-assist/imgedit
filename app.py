@@ -4,6 +4,8 @@ import json
 import tempfile
 import sys
 import platform
+import subprocess
+import stat
 from flask import Flask, request, jsonify, send_from_directory, make_response, send_file
 import redis
 import exiftool
@@ -44,6 +46,40 @@ def sysinfo():
         'machine': platform.machine(),
         'architecture': platform.architecture(),
         'python_version': sys.version
+    })
+
+@app.route('/debug-env')
+def debug_env():
+    exiftool_path = os.path.join(app.root_path, 'Image-ExifTool-13.59', 'exiftool')
+    
+    # Check 1: Does the file exist?
+    exists = os.path.exists(exiftool_path)
+    
+    # Check 2: Is it executable?
+    is_executable = False
+    if exists:
+        is_executable = os.access(exiftool_path, os.X_OK)
+        
+    # Check 3: Is Perl installed?
+    perl_version = "Not installed or failed"
+    try:
+        perl_version = subprocess.check_output(['perl', '-v'], stderr=subprocess.STDOUT).decode('utf-8').split('\n')[1]
+    except Exception as e:
+        perl_version = str(e)
+        
+    # Check 4: Try running exiftool directly
+    direct_run = "Failed"
+    try:
+        if exists:
+            direct_run = subprocess.check_output([exiftool_path, '-ver'], stderr=subprocess.STDOUT).decode('utf-8').strip()
+    except Exception as e:
+        direct_run = str(e)
+
+    return jsonify({
+        'exiftool_exists': exists,
+        'exiftool_executable': is_executable,
+        'perl_check': perl_version,
+        'exiftool_direct_run': direct_run
     })
 
 @app.route('/')
