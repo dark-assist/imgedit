@@ -2,6 +2,8 @@ import os
 import uuid
 import json
 import tempfile
+import sys
+import platform
 from flask import Flask, request, jsonify, send_from_directory, make_response, send_file
 import redis
 import exiftool
@@ -33,6 +35,17 @@ def get_cookie_id():
         cookie_id = str(uuid.uuid4())
     return cookie_id
 
+@app.route('/sysinfo')
+def sysinfo():
+    return jsonify({
+        'system': platform.system(),
+        'release': platform.release(),
+        'version': platform.version(),
+        'machine': platform.machine(),
+        'architecture': platform.architecture(),
+        'python_version': sys.version
+    })
+
 @app.route('/')
 def index():
     response = make_response(send_from_directory('static', 'index.html'))
@@ -57,6 +70,13 @@ def upload_file():
     try:
         with exiftool.ExifToolHelper() as et:
             metadata = et.get_metadata(save_path)[0]
+            
+        # Security: Remove sensitive server paths from metadata
+        keys_to_remove = ['SourceFile']
+        for key in list(metadata.keys()):
+            if key in keys_to_remove or key.startswith('File:Directory') or key.startswith('File:FileName') or key.startswith('File:FilePermissions'):
+                del metadata[key]
+                
     except Exception as e:
         return jsonify({'error': f'Failed to read metadata: {str(e)}'}), 500
         
