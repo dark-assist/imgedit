@@ -1,0 +1,5 @@
+Flask
+redis
+PyExifTool
+werkzeug
+python-dotenv
