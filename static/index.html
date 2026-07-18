@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExifFlow - Premium Metadata Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-effect"></div>
+    <div class="container">
+        <header>
+            <h1>Exif<span>Flow</span></h1>
+            <p>Seamlessly view and edit image metadata with zero quality loss.</p>
+        </header>
 
+        <main>
+            <section id="upload-section" class="card active">
+                <div class="drop-zone" id="drop-zone">
+                    <div class="drop-zone-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10V9C7 6.23858 9.23858 4 12 4C14.7614 4 17 6.23858 17 9V10C19.2091 10 21 11.7909 21 14C21 15.4806 20.1956 16.8084 19 17.5M7 10C4.79086 10 3 11.7909 3 14C3 15.4806 3.8044 16.8084 5 17.5M7 10C7.43285 10 7.84965 10.0688 8.24006 10.1959M12 12V21M12 12L15 15M12 12L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p class="drop-text">Drag & drop your image here</p>
+                        <p class="sub-text">or <span class="highlight">browse</span> to choose a file</p>
+                        <p class="formats-text">Supports JPEG, PNG, HEIC, TIFF, RAW</p>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*,.heic,.heif,.tiff,.raw" hidden>
+                </div>
+                <div id="upload-progress" class="progress-bar-container hidden">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+            </section>
+
+            <section id="editor-section" class="card hidden">
+                <div class="editor-header">
+                    <h2>Edit Metadata</h2>
+                    <button id="back-btn" class="btn-secondary">Back to Upload</button>
+                </div>
+                <div class="search-bar-container">
+                    <input type="text" id="search-input" placeholder="Search metadata fields..." class="search-input">
+                </div>
+                <form id="metadata-form" class="metadata-form">
+                    <!-- Dynamic fields will be injected here -->
+                </form>
+                <div class="actions">
+                    <button id="save-btn" class="btn-primary">
+                        <span class="btn-text">Save & Download</span>
+                        <div class="spinner hidden" id="save-spinner"></div>
+                    </button>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Your edits are cached securely for 12 hours. No login required.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
